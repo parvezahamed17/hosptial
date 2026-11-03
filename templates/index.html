@@ -1,0 +1,175 @@
+ 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hospital Token Dashboard</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #eef4fb;
+            color: #26364a;
+        }
+
+        header {
+            background: #1769aa;
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 25px auto;
+            padding: 0 18px;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow: 0 4px 14px #cbd8e8;
+        }
+
+        h2 { color: #1769aa; margin-top: 0; }
+
+        label {
+            display: block;
+            margin: 12px 0 6px;
+        }
+
+        input {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 15px;
+            padding: 12px;
+            border: 0;
+            border-radius: 6px;
+            background: #1769aa;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover { background: #0e4f86; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th { background: #e3effb; }
+
+        .empty { color: #64748b; }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+        }
+
+        @media (max-width: 650px) {
+            .container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>🏥 Hospital Registration System</h1>
+        <p>Patient Registration and Token Management</p>
+    </header>
+
+    <main class="container">
+        <section class="card">
+            <h2>➕ Register Patient</h2>
+            <form action="/register" method="POST">
+                <label>Patient Name</label>
+                <input type="text" name="name" required>
+
+                <label>Age</label>
+                <input type="number" name="age" min="1" max="120" required>
+
+                <label>Phone Number</label>
+                <input type="tel" name="phone"
+                       pattern="[0-9]{10}" maxlength="10" required>
+
+                <button type="submit">Register Patient</button>
+            </form>
+        </section>
+
+        <section class="card">
+            <h2>👨‍⚕️ Next Patient</h2>
+
+            {% if next_patient %}
+                <h3>Token: {{ next_patient.token }}</h3>
+                <p>Name: {{ next_patient.name }}</p>
+                <p>Age: {{ next_patient.age }}</p>
+
+                <form action="/complete" method="POST">
+                    <button type="submit">Complete Consultation</button>
+                </form>
+            {% else %}
+                <p class="empty">No patients are waiting.</p>
+            {% endif %}
+        </section>
+
+        <section class="card">
+            <h2>🕒 Waiting Queue</h2>
+
+            {% if waiting %}
+                <table>
+                    <tr><th>Token</th><th>Name</th><th>Age</th></tr>
+                    {% for patient in waiting %}
+                    <tr>
+                        <td>{{ patient.token }}</td>
+                        <td>{{ patient.name }}</td>
+                        <td>{{ patient.age }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p class="empty">No patients in the queue.</p>
+            {% endif %}
+        </section>
+
+        <section class="card">
+            <h2>✅ Completed Consultations</h2>
+
+            {% if completed %}
+                <table>
+                    <tr><th>Token</th><th>Name</th></tr>
+                    {% for patient in completed %}
+                    <tr>
+                        <td>{{ patient.token }}</td>
+                        <td>{{ patient.name }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p class="empty">No completed consultations yet.</p>
+            {% endif %}
+        </section>
+    </main>
+
+    <footer>Hospital Registration Token System | Mini Project</footer>
+</body>
+</html>
